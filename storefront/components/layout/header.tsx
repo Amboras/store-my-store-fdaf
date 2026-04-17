@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import { Search, ShoppingBag, User, Menu, X, LogIn } from 'lucide-react'
+import { Search, ShoppingBag, User, Menu, X, LogIn, Heart } from 'lucide-react'
 import { useCart } from '@/hooks/use-cart'
 import { useAuth } from '@/hooks/use-auth'
 import CartDrawer from '@/components/cart/cart-drawer'
@@ -25,14 +25,12 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Focus close button when mobile menu opens
   useEffect(() => {
     if (isMobileMenuOpen) {
       mobileMenuCloseRef.current?.focus()
     }
   }, [isMobileMenuOpen])
 
-  // Close mobile menu on Escape
   useEffect(() => {
     if (!isMobileMenuOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -42,7 +40,6 @@ export default function Header() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isMobileMenuOpen])
 
-  // Focus trap for mobile menu
   const handleMobileMenuKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key !== 'Tab' || !mobileMenuRef.current) return
     const focusable = mobileMenuRef.current.querySelectorAll<HTMLElement>(
@@ -65,8 +62,8 @@ export default function Header() {
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           isScrolled
-            ? 'bg-background/95 backdrop-blur-md border-b shadow-sm'
-            : 'bg-background border-b'
+            ? 'bg-white/95 backdrop-blur-md border-b border-[#E8DDD4] shadow-sm'
+            : 'bg-white border-b border-[#E8DDD4]'
         }`}
       >
         <div className="container-custom">
@@ -81,27 +78,31 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <span className="font-heading text-2xl font-semibold tracking-tight">
-                Store
+            <Link href="/" className="flex items-center gap-2 group">
+              <Heart className="h-5 w-5 text-[#C4622A] fill-[#C4622A] group-hover:scale-110 transition-transform" />
+              <span className="font-heading text-2xl font-semibold tracking-tight text-[#2C1810]">
+                PawHaven
               </span>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8">
-              <Link href="/products" className="text-sm tracking-wide uppercase link-underline py-1" prefetch={true}>
+              <Link href="/products" className="text-sm tracking-wide font-medium link-underline py-1 text-[#2C1810]" prefetch={true}>
                 Shop All
               </Link>
               {collections?.slice(0, 4).map((collection: any) => (
                 <Link
                   key={collection.id}
                   href={`/collections/${collection.handle}`}
-                  className="text-sm tracking-wide uppercase link-underline py-1"
+                  className="text-sm tracking-wide font-medium link-underline py-1 text-[#2C1810]"
                   prefetch={true}
                 >
                   {collection.title}
                 </Link>
               ))}
+              <Link href="/about" className="text-sm tracking-wide font-medium link-underline py-1 text-[#2C1810]" prefetch={true}>
+                Our Story
+              </Link>
             </nav>
 
             {/* Actions */}
@@ -111,23 +112,23 @@ export default function Header() {
                 className="p-2.5 hover:opacity-70 transition-opacity"
                 aria-label="Search"
               >
-                <Search className="h-5 w-5" />
+                <Search className="h-5 w-5 text-[#2C1810]" />
               </Link>
               <Link
                 href={isLoggedIn ? '/account' : '/auth/login'}
                 className="p-2.5 hover:opacity-70 transition-opacity hidden sm:block"
                 aria-label={isLoggedIn ? 'Account' : 'Sign in'}
               >
-                {isLoggedIn ? <User className="h-5 w-5" /> : <LogIn className="h-5 w-5" />}
+                {isLoggedIn ? <User className="h-5 w-5 text-[#2C1810]" /> : <LogIn className="h-5 w-5 text-[#2C1810]" />}
               </Link>
               <button
                 onClick={() => setIsCartOpen(true)}
                 className="relative p-2.5 hover:opacity-70 transition-opacity"
                 aria-label="Shopping bag"
               >
-                <ShoppingBag className="h-5 w-5" />
+                <ShoppingBag className="h-5 w-5 text-[#2C1810]" />
                 {itemCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
+                  <span className="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#C4622A] text-[10px] font-bold text-white">
                     {itemCount}
                   </span>
                 )}
@@ -150,10 +151,13 @@ export default function Header() {
             aria-modal="true"
             aria-label="Navigation menu"
             onKeyDown={handleMobileMenuKeyDown}
-            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-background animate-slide-in-right"
+            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-white animate-slide-in-right"
           >
-            <div className="flex items-center justify-between p-4 border-b">
-              <span className="font-heading text-xl font-semibold">Menu</span>
+            <div className="flex items-center justify-between p-4 border-b border-[#E8DDD4]">
+              <div className="flex items-center gap-2">
+                <Heart className="h-4 w-4 text-[#C4622A] fill-[#C4622A]" />
+                <span className="font-heading text-xl font-semibold text-[#2C1810]">PawHaven</span>
+              </div>
               <button
                 ref={mobileMenuCloseRef}
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -167,7 +171,7 @@ export default function Header() {
               <Link
                 href="/products"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-3 text-lg tracking-wide border-b border-border/50"
+                className="block py-3 text-lg font-medium tracking-wide border-b border-border/50 text-[#2C1810]"
                 prefetch={true}
               >
                 Shop All
@@ -177,12 +181,20 @@ export default function Header() {
                   key={collection.id}
                   href={`/collections/${collection.handle}`}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 text-lg tracking-wide border-b border-border/50"
+                  className="block py-3 text-lg font-medium tracking-wide border-b border-border/50 text-[#2C1810]"
                   prefetch={true}
                 >
                   {collection.title}
                 </Link>
               ))}
+              <Link
+                href="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-3 text-lg font-medium tracking-wide border-b border-border/50 text-[#2C1810]"
+                prefetch={true}
+              >
+                Our Story
+              </Link>
               <div className="pt-4 space-y-1">
                 <Link
                   href={isLoggedIn ? '/account' : '/auth/login'}
